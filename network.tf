@@ -1,6 +1,7 @@
 resource "aws_vpc" "tf" {
   cidr_block       = var.cidr_block_vpc
   instance_tenancy = "default"
+  enable_dns_hostnames = true
 }
 
 resource "aws_subnet" "public" {
@@ -58,13 +59,12 @@ resource "aws_security_group" "tf" {
   }
 
   # ingress {
-  #   description = "Jenkins Tunnel"
+  #   description = "SSH"
   #   from_port   = 50000
   #   to_port     = 50000
   #   protocol    = "tcp"
-  #   security_groups = [aws_security_group.agents.id]
+  #   cidr_blocks = ["0.0.0.0/0"]
   # }
-
 
   egress {
     from_port        = 0
@@ -83,7 +83,8 @@ resource "aws_security_group_rule" "tunnel" {
   source_security_group_id = aws_security_group.agents.id
   security_group_id = aws_security_group.tf.id
 }
-# resource "aws_eip" "lb" {
-#   instance = aws_instance.launch.id
-#   domain   = "vpc"
-# }
+
+resource "aws_eip_association" "eip_assoc" {
+  instance_id   = aws_instance.launch.id
+  allocation_id = var.eip
+}

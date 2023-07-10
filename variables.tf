@@ -2,6 +2,8 @@ variable "ingress_ips" {}
 
 variable "cidr_block_vpc" {}
 
+variable "eip" {}
+
 variable "tags" {}
 
 variable "ebs_block" {}
